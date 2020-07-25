@@ -9,7 +9,7 @@ const disk = require('diskusage');
 
 const express = require('express');
 const app = express();
-const port = 8080;
+const port = 8081;
 const NodeCache = require("node-cache");
 const fileCache = new NodeCache({stdTTL: 10});
 
@@ -144,7 +144,7 @@ async function getFileData() {
 
   return fileData.filter(
     file => {
-      return file.size > 60000
+      return file.size > 10000
     }
   );
 }

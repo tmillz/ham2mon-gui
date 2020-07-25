@@ -1,12 +1,14 @@
 import React, {useCallback, useMemo, useState} from "react";
-import {primary, primary2, primary4} from "./color";
 import {DataItem} from "./DataItem";
 import {FaTimes} from "react-icons/fa";
 import {download, getLocalStorage, sec2time, writeLocalStorage} from "./Utils";
 import {useLocalStorage} from "./useLocalStorage";
-import {Button} from "./Button";
 import {Bar} from 'react-chartjs-2';
-import Select from 'react-select';
+import Select from 'react-select-v2';
+import { ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './theme';
+import { GlobalStyles } from './global';
+import { Button } from 'react-bootstrap';
 
 /**
  * @return {null}
@@ -23,88 +25,15 @@ export const Settings = ({
                            handleDeleteBefore,
                            freqData
                          }) => {
-  const styles = {
-    outerContainer: {
-      position: "fixed",
-      padding: 20,
-      width: "100%",
-      zIndex: 2000,
-      boxSizing: "border-box",
-      backgroundColor: "#00000055",
-      height: '100%',
-      overflowY: 'scroll',
-    },
-    container: {
-      backgroundColor: primary2,
-      padding: 20,
-      width: "100%",
-      zIndex: 2000,
-      boxSizing: "border-box",
-      border: "1px solid #EEE",
-      borderRadius: '0 0 6px 6px',
-      color: primary4,
-      boxShadow: '0px 3px 10px #585858'
-    },
-    titleBar: {
-      position: "relative",
-      backgroundColor: primary,
-      color: "#FFF",
-      fontSize: 24,
-      padding: 8,
-      borderRadius: '6px 6px 0 0'
-    },
-    dataItems: {
-      display: "flex",
-      flexWrap: 'wrap',
-      marginBottom: 8
-    },
-    closeButton: {
-      position: "absolute",
-      right: 8,
-      top: 12,
-      cursor: "pointer"
-    },
-    controls: {
-      marginTop: 14
-    },
-    restoreBlock: {
-      backgroundColor: "#FFF",
-      marginTop: 10,
-      padding: 10,
-      borderRadius: 4,
-      maxWidth: 600
-    },
-    selectBlock: {
-      marginTop: 10,
-      color: primary,
-      display: "flex",
-      flexWrap: "wrap",
-      alignItems: "baseline"
-    },
-    restoreText: {
-      marginBottom: 10,
-      fontSize: 18,
-    },
-    timeSelectItem: {
-      color: primary4
-    },
-    selectBlockText: {
-      color: primary4,
-      marginRight: 8,
-      marginBottom: 4
-    },
-    chart: {
-      maxWidth: 600,
-      backgroundColor: "#FFF",
-      padding: 8,
-      borderRadius: 4
-    },
-    chartTitle: {
-      fontSize: 18,
-      textAlign: 'center',
-      marginBottom: 6
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
     }
-  };
+  }
 
   const namedFreqStats = freqStats.map(freqStat => {
     const name = freqData.find(item => item.freq === freqStat.freq);
@@ -121,8 +50,6 @@ export const Settings = ({
     control: (base, state) => ({
       ...base,
       boxShadow: "none",
-      color: primary,
-      border: `1px solid ${primary}`,
       width: 200,
       marginRight: 10
     })
@@ -130,39 +57,39 @@ export const Settings = ({
 
   const timeSelect = useMemo(() => [
     {
-      label: <div style={styles.timeSelectItem}>10 min</div>,
+      label: <div>10 min</div>,
       value: 60 * 10
     },
     {
-      label: <div style={styles.timeSelectItem}>30 min</div>,
+      label: <div>30 min</div>,
       value: 60 * 30
     },
     {
-      label: <div style={styles.timeSelectItem}>1 hour</div>,
+      label: <div>1 hour</div>,
       value: 60 * 60
     },
     {
-      label: <div style={styles.timeSelectItem}>2 hours</div>,
+      label: <div>2 hours</div>,
       value: 60 * 60 * 2
     },
     {
-      label: <div style={styles.timeSelectItem}>1 day</div>,
+      label: <div>1 day</div>,
       value: 60 * 60 * 24
     },
     {
-      label: <div style={styles.timeSelectItem}>2 days</div>,
+      label: <div>2 days</div>,
       value: 60 * 60 * 24 * 2
     },
     {
-      label: <div style={styles.timeSelectItem}>3 days</div>,
+      label: <div>3 days</div>,
       value: 60 * 60 * 24 * 3
     },
     {
-      label: <div style={styles.timeSelectItem}>1 week</div>,
+      label: <div>1 week</div>,
       value: 60 * 60 * 24 * 7
     },
     {
-      label: <div style={styles.timeSelectItem}>Forever</div>,
+      label: <div>Forever</div>,
       value: 60 * 60 * 24 * 10000
     }
   ], []);
@@ -183,7 +110,6 @@ export const Settings = ({
         datasets: [
           {
             label: 'Call count',
-            backgroundColor: primary,
             data: freqStats.map(stat => stat.count)
           }
         ]
@@ -192,22 +118,11 @@ export const Settings = ({
       height={200}
       options={{
         maintainAspectRatio: false,
-        legend: {
-          labels: {
-            fontColor: primary4,
-          }
-        },
         scales: {
           yAxes: [{
             ticks: {
-              fontColor: primary4,
               stepSize: 1,
               min: 1
-            }
-          }],
-          xAxes: [{
-            ticks: {
-              fontColor: primary4,
             }
           }]
         }
@@ -216,20 +131,17 @@ export const Settings = ({
   }, [freqStats]);
 
   return visible ? (
-    <div
-      style={styles.outerContainer}
-    >
-      <div style={styles.titleBar}>
+    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+    <GlobalStyles/>
+    <div>
+      <div>
         <FaTimes
-          style={styles.closeButton}
           onClick={handleClose}
         />
         Settings
       </div>
-      <div
-        style={styles.container}
-      >
-        <div style={styles.dataItems}>
+      <div>
+        <div>
           <DataItem
             title="WAV directory size"
             type={"MB"}
@@ -247,26 +159,17 @@ export const Settings = ({
             type={"MB"}
             value={sec2time(dirSize / 16000, true)}
           />
-
-
         </div>
 
-        <div style={styles.chart}>
-          <div style={styles.chartTitle}>Activity for last {callsSinceSelectValue.label.props.children}</div>
+        <div>
+          <div 
+          >Activity for last {callsSinceSelectValue.label.props.children}</div>
           {getBarChart()}
         </div>
 
-        <div style={styles.selectBlock}>
-          <span style={{color: primary4}}>Server IP</span>
+        <div>
+          <span>Server IP</span>
           <input
-            style={{
-              padding: 8,
-              fontSize: 14,
-              marginLeft: 8,
-              border: `1px solid ${primary}`,
-              borderRadius: "4px 0 0 4px",
-              color: primary4
-            }}
             type={'text'}
             value={serverIP}
             onChange={(event) => {
@@ -274,69 +177,43 @@ export const Settings = ({
             }}
           />
           <Button
-            title={'Set'}
             type={"input"}
             onClick={() => window.location.reload()}
-          />
+          >Set</Button>
         </div>
 
-        <div style={styles.selectBlock}>
-          <span style={styles.selectBlockText}>Show calls since</span>
+        <div>
+          <span>Show calls since</span>
 
           <Select
-            style={styles.select}
             value={callsSinceSelectValue}
             options={timeSelect}
-            styles={customStyles}
-            theme={theme => ({
-              ...theme,
-              borderRadius: 4,
-              colors: {
-                ...theme.colors,
-                primary25: primary2,
-                primary: primary,
-              },
-            })}
             onChange={(res) => {
               setShowSince(res.value)
             }}
           />
         </div>
 
-        <div style={styles.selectBlock}>
-          <span style={styles.selectBlockText}>Remove calls older than</span>
-
+        <div>
+          <span>Remove calls older than</span>
           <Select
-            style={styles.select}
             value={removeBeforeSelectValue}
             options={timeSelect}
-            styles={customStyles}
-            theme={theme => ({
-              ...theme,
-              borderRadius: 4,
-              colors: {
-                ...theme.colors,
-                primary25: primary2,
-                primary: primary,
-              },
-            })}
             onChange={(res) => {
               setRemoveBefore(res.value)
             }}
           />
-
           <Button
-            title={'Remove'}
             onClick={async () => {
               if (window.confirm(`Are you sure you want to delete calls older than ${removeBeforeSelectValue.label.props.children}?`)) {
                 handleDeleteBefore(removeBefore);
               }
             }}
-          />
+          >Remove</Button>
         </div>
 
-        <div style={styles.restoreBlock}>
-          <div style={styles.restoreText}>Restore backup by uploading it below</div>
+        <div>
+          <div>Restore backup by uploading it below</div>
           <input
             type={'file'}
             onChange={(event) => {
@@ -356,21 +233,21 @@ export const Settings = ({
           />
         </div>
 
-        <div style={styles.controls}>
+        <div>
           <div>
             <Button
-              title={'Backup Data'}
               secondary={true}
               onClick={() => {
                 const storage = getLocalStorage();
 
                 download('Ham2Mon-Gui-Backup-' + new Date().toDateString() + ".bak", storage);
               }}
-            />
+            >Backup Data</Button>
           </div>
-
         </div>
+        <Button onClick={toggleTheme}>Toggle theme</Button>
       </div>
     </div>
+    </ThemeProvider>
   ) : null;
 };

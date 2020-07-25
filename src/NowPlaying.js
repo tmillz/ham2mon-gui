@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {isChrome} from "./Utils";
-import {secondary, secondary25} from "./color";
 import {useWindowSize} from "./hooks/useWindowSize";
 
 export function NowPlaying({call, freqData}) {
@@ -9,8 +8,6 @@ export function NowPlaying({call, freqData}) {
 
   const styles = {
     container: {
-      color: secondary25,
-      backgroundColor: secondary,
       borderRadius: 16,
       display: 'flex',
       flexDirection: 'column',
@@ -25,7 +22,6 @@ export function NowPlaying({call, freqData}) {
 
     },
     freq: {
-      color: secondary25,
       fontFamily: "Segment7",
       fontWeight: 'normal',
       fontStyle: 'italic',

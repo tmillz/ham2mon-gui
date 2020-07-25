@@ -1,5 +1,4 @@
 import React from "react";
-import {primary, primary4} from "./color";
 import {useWindowSize} from "./hooks/useWindowSize";
 
 export function DataItem({title, value, type}) {
@@ -7,15 +6,11 @@ export function DataItem({title, value, type}) {
 
   const styles = {
     container: {
-      backgroundColor: "#FFF",
       width: windowSize.width >= 600 ? 150 : "100%",
       textAlign: "center",
-      border: `1px solid ${primary}`,
       borderRadius: 6,
       marginRight: windowSize.width >= 600 ? 8 : 0,
       padding: 6,
-      color: primary4,
-      boxShadow: '1px 2px 3px #eabe95'
     },
     title: {
       fontSize: 14,

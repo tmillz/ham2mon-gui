@@ -1,3 +1,4 @@
+import { GlobalStyles } from './global';
 import React, {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
 import Call from "./Call";
@@ -8,77 +9,20 @@ import {BooleanOption} from "./BooleanOption";
 import {NowPlaying} from "./NowPlaying";
 import {getFreqStats} from "./Utils";
 import {useHotkeys} from 'react-hotkeys-hook';
-import Select from 'react-select'
 import useDimensions from 'react-use-dimensions';
-import {primary, primary2, primary4, secondary25} from "./color";
 import ReactList from 'react-list';
 import {Settings} from "./Settings";
 import {useWindowSize} from "./hooks/useWindowSize";
+import { ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './theme';
+import { Button } from 'react-bootstrap';
+import Modal from './Modal'
+import ModalExample from './Modal';
+import Select from 'react-select-v2'
 
 function App() {
   const windowSize = useWindowSize();
   const [optionsBlockRef, optionsBlockDimensions] = useDimensions();
-
-  const styles = {
-    optionsBlock: {
-      position: 'fixed',
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "space-around",
-      top: 0,
-      padding: 6,
-      backgroundColor: "#FFF",
-      width: "100%",
-      borderBottom: "1px solid #eee",
-      zIndex: 1000,
-      boxShadow: '1px 1px 2px #adadad',
-      boxSizing: 'border-box'
-    },
-    leftOptionsBlock: {
-      marginRight: windowSize.width >= 600 ? 8 : 0,
-      width: windowSize.width >= 600 ? "40%" : '100%',
-    },
-    rightOptionsBlock: {
-      boxSizing: "border-box",
-      flexGrow: 1,
-      backgroundColor: secondary25,
-      padding: 10,
-      borderRadius: 4,
-      boxShadow: "1px 1px 2px #999",
-    },
-    buttons: {
-      display: "flex",
-      justifyContent: "space-between",
-      flexWrap: "wrap"
-    },
-    records: {
-      paddingTop: optionsBlockDimensions.height ? optionsBlockDimensions.height + 2 : 0
-    },
-    audio: {
-      width: "100%",
-      userSelect: "none",
-      outline: 0,
-      boxShadow: "1px 1px 2px #999",
-      borderRadius: 30
-    },
-    select: {
-      outline: 0,
-    },
-    loadError: {
-      backgroundColor: primary2,
-      color: primary4,
-      padding: 10,
-      margin: 10,
-      borderRadius: 4
-    },
-    loading: {
-      color: primary4,
-      padding: 10,
-      margin: 10,
-      textAlign: 'center',
-      fontWeight: 400
-    }
-  };
 
   const [calls, setCalls] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -117,6 +61,53 @@ function App() {
   const unlistenedCalls = calls.filter(call => !listenedArr.includes(call.file));
 
   let filteredFreqs = uniqueFreqs.filter(freq => !hiddenArr.includes(freq));
+
+  const [theme, setTheme] = useState('light');
+
+  //const toggleTheme = () => {
+  //  if (theme === 'light') {
+  //    setTheme('dark');
+  //  } else {
+  //    setTheme('light');
+  //  }
+  //}
+
+  //const customStyles = {
+  //  control: (base) => ({
+  //    ...base,
+  //    background: darkTheme
+      //theme={theme === 'light' ? lightTheme : darkTheme}
+  //  })
+  //};
+
+  const selectStyles = {
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+      //return {
+        ...styles,
+        backgroundColor: isDisabled
+        ? null
+        : isSelected
+        ? data.color
+        : isFocused
+        ? '#6b6b6b'
+        : null,
+      color: isDisabled
+        ? '#6b6b6b'
+        : isSelected
+        ? '#6b6b6b'
+          ? '#6b6b6b'
+          : '#6b6b6b'
+        : data.color,
+      cursor: isDisabled ? 'not-allowed' : 'default',
+
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled && (isSelected ? '#6b6b6b' : '#6b6b6b'),
+      },
+      //};
+    })
+  };
+
 
   if (showHidden) {
     filteredFreqs = uniqueFreqs.filter(freq => hiddenArr.includes(freq));
@@ -238,16 +229,6 @@ function App() {
     </div>
   }));
 
-  const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      boxShadow: "none",
-      borderColor: "#EEE !important",
-      height: 44,
-      marginBottom: windowSize.width >= 600 ? 0 : 4
-    })
-  };
-
   const handleDeleteBefore = async (beforeTime) => {
     await axios.post(`${serverUrl}deleteBefore`, {
       deleteBeforeTime: Math.floor(Date.now() / 1000) - beforeTime
@@ -257,77 +238,38 @@ function App() {
   };
 
   return (
-    <div>
-      <Settings
-        visible={showSettings}
-        dirSize={dirSize}
-        freeSpace={freeSpace}
-        handleClose={() => setShowSettings(false)}
-        freqStats={freqStats}
-        showSince={showSince}
-        setShowSince={setShowSince}
-        setShowOnlyFreq={setShowOnlyFreq}
-        handleDeleteBefore={handleDeleteBefore}
-        freqData={freqData}
-      />
-      <div
-        ref={optionsBlockRef}
-        style={styles.optionsBlock}
-      >
-        {windowSize.width >= 600 || mobileSettingsOpen ? <div style={styles.leftOptionsBlock}>
-          <div
-            ref={buttonsRef}
-            style={styles.buttons}
-          >
-            <BooleanOption
-              title={'Autoplay'}
-              containerWidth={buttonsDimensions.width}
+    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+    <GlobalStyles/>
+        {windowSize.width >= 600 || mobileSettingsOpen ? <div>
+            <Button
               value={autoplay}
               onClick={() => {
                 setAutoplay(!autoplay);
               }}
-            />
-            <BooleanOption
-              title={'Settings'}
-              containerWidth={buttonsDimensions.width}
-              onClick={() => {
-                setShowSettings(true);
-              }}
-            />
-            <BooleanOption
-              title={'Hide Listened'}
-              containerWidth={buttonsDimensions.width}
+            >Autoplay</Button>
+            <Button
               value={!showRead}
               onClick={() => {
                 setShowRead(!showRead);
               }}
-            />
-            <BooleanOption
-              title={'Show Hidden'}
-              containerWidth={buttonsDimensions.width}
+            >Hide Listened</Button>
+            <Button
               value={showHidden}
               onClick={() => {
                 setShowHidden(!showHidden);
               }}
-            />
-            <BooleanOption
-              title={'Scroll to Top'}
-              containerWidth={buttonsDimensions.width}
+            >Show Hidden</Button>
+            <Button
               onClick={() => {
                 window.scrollTo(0, 0);
               }}
-            />
-            <BooleanOption
-              title={'Scroll to Bottom'}
-              containerWidth={buttonsDimensions.width}
+            >Scroll to Top</Button>
+            <Button
               onClick={() => {
                 window.scrollTo(0, document.body.scrollHeight);
               }}
-            />
-            <BooleanOption
-              title={'Delete Listened'}
-              containerWidth={buttonsDimensions.width}
-              warning={true}
+            >Scroll to Bottom</Button>
+            <Button
               onClick={async () => {
                 if (!window.confirm(`Are you sure you want to delete all listened audio${showOnlyFreq ? ' on this freq?' : "?"}`)) {
                   return false;
@@ -353,11 +295,8 @@ function App() {
                 setShowOnlyFreq('');
                 getData();
               }}
-            />
-            <BooleanOption
-              title={'Mark Listened'}
-              containerWidth={buttonsDimensions.width}
-              warning={true}
+            >Delete Listened</Button>
+            <Button
               onClick={async () => {
                 if (!window.confirm(`Are you sure you want to mark ${showOnlyFreq ? "this frequency" : "all calls"} as read?`)) {
                   return false;
@@ -378,24 +317,25 @@ function App() {
 
                 setListenedArr(tmpListenedArr);
               }}
+            >Mark Listened</Button>
+            <ModalExample
+              visible={showSettings}
+              dirSize={dirSize}
+              freeSpace={freeSpace}
+              handleClose={() => setShowSettings(false)}
+              freqStats={freqStats}
+              showSince={showSince}
+              setShowSince={setShowSince}
+              setShowOnlyFreq={setShowOnlyFreq}
+              handleDeleteBefore={handleDeleteBefore}
+              freqData={freqData}
             />
-          </div>
-          <div>
-            <Select
-              style={styles.select}
+            
+            <Select id="react-select-container" classNamePrefix="react-select"
+              styles={selectStyles}
               value={selectOptions.find(option => option.value === showOnlyFreq)}
               placeholder={"Select a frequency"}
               options={selectOptions}
-              styles={customStyles}
-              theme={theme => ({
-                ...theme,
-                borderRadius: 4,
-                colors: {
-                  ...theme.colors,
-                  primary25: primary2,
-                  primary: primary,
-                },
-              })}
               onChange={(res) => {
                 setShowOnlyFreq(res.label === 'No filter' ? '' : res.value);
 
@@ -404,20 +344,17 @@ function App() {
                 }, 200)
               }}
             />
-          </div>
+
         </div> : null}
         {windowSize.width < 600 ? <div style={{width: '100%'}}>
-          <BooleanOption
-            fullWidth={true}
-            title={!mobileSettingsOpen ? 'Open Panel' : 'Close Panel'}
+          <Button block
             onClick={() => setMobileSettingsOpen(!mobileSettingsOpen)}
-          />
+            >{!mobileSettingsOpen ? 'Open Panel' : 'Close Panel'}</Button>
         </div> : null}
-        <div style={styles.rightOptionsBlock}>
+        <div>
           <NowPlaying call={selectedCall} freqData={freqData}/>
           <audio
             ref={audioRef}
-            style={styles.audio}
             onPlay={() => {
               setPlaying(true);
             }}
@@ -437,17 +374,16 @@ function App() {
             controls
           />
         </div>
-      </div>
 
-      <div style={styles.records}>
-        {loadError ? <div style={styles.loadError}>
+      <div>
+        {loadError ? <div>
           There was an issue connecting to the server. Please ensure the settings are correct.
         </div> : null}
 
-        {!loading && !filteredCalls.length && !loadError ? <div style={styles.loadError}>
+        {!loading && !filteredCalls.length && !loadError ? <div>
           No calls to display. Try changing frequency.
         </div> : null}
-        {loading ? <div style={styles.loading}>Loading calls...</div> :
+        {loading ? <div>Loading calls...</div> :
           <ReactList
             itemRenderer={(index, key) => {
               const call = filteredCalls[index];
@@ -516,7 +452,7 @@ function App() {
             type='uniform'
           />}
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 

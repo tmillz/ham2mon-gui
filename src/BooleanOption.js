@@ -1,5 +1,4 @@
 import React from "react";
-import {secondary} from "./color";
 import {useHover} from "./hooks/useHover";
 
 export function BooleanOption({
@@ -30,28 +29,24 @@ export function BooleanOption({
       marginRight: (type === 'small' || type === 'settings') && !fullWidth ? 8 : 0,
       width: width,
       borderRadius: 4,
-      border: isHovered ? `1px solid ${secondary}` : '1px solid rgba(0,0,0,0)',
+      //border: isHovered ? `1px solid ${secondary}` : '1px solid rgba(0,0,0,0)',
       textAlign: type === 'small' ? 'center' : 'left',
-      boxShadow: !warning?"rgb(120, 158, 136) 1px 1px 2px":'rgb(160, 122, 90) 1px 1px 2px',
     }
   };
 
-  let backgroundColor = "#c6e1d1";
-  let color = secondary;
-
   if (value) {
-    backgroundColor = '#284b34';
-    color = "#FFF";
+    //backgroundColor = '#284b34';
+    //color = "#FFF";
   }
 
   if (warning) {
-    color = "#FFF";
-    backgroundColor = "#f79c51"
+    //color = "#FFF";
+    //backgroundColor = "#f79c51"
   }
 
   return <div
     ref={hoverRef}
-    style={{...styles.container, backgroundColor: backgroundColor, color: color}}
+    //style={{...styles.container, backgroundColor: backgroundColor, color: color}}
     onClick={onClick}
   >
     {title}

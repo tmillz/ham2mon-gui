@@ -1,12 +1,10 @@
 import React from "react";
-import {primary4} from "./color";
 
 export function SmallDataBlock({Icon, data}) {
   const styles = {
     container: {
       display: "inline-block",
-      marginRight: 10,
-      color: primary4
+      marginRight: 10
     },
     icon: {
       marginRight: 2,

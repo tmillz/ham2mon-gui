@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import {FaRegClock, FaRegHdd} from 'react-icons/fa';
 import produce from "immer"
 import {sec2time} from "./Utils";
-import {primary2, primary4, secondary2} from "./color";
 import {SmallDataBlock} from "./SmallDataBlock";
 import {TextButton} from "./TextButton";
 import {useHover} from "./hooks/useHover";
@@ -23,7 +22,8 @@ function Call({
                 freqData,
                 setFreqData,
               }) {
-  const [hoverRef, isHovered] = useHover();
+  //const [hoverRef, isHovered] = useHover();
+  const [hoverRef] = useHover();
 
   const styles = {
     item: {
@@ -81,27 +81,8 @@ function Call({
       marginBottom: 14
     }
   };
+
   const {time, freq, file, size} = data;
-
-  let color = primary4;
-  let bg = "#FFF";
-  let border = '1px solid #EEE';
-
-  if (size / 16000 > 10) {
-    bg = secondary2;
-  }
-
-  if (listened) {
-    bg = primary2;
-  }
-
-  if (isHovered) {
-    border= '1px solid #ccc';
-  }
-
-  if (selected) {
-    border = "2px solid #f79c51";
-  }
 
   const freqItem = freqData.find(freqItem => freqItem.freq === freq);
   const freqItemIndex = freqData.findIndex(freqItem => freqItem.freq === freq);
@@ -109,12 +90,6 @@ function Call({
   return (
     <div
       ref={hoverRef}
-      style={{
-        ...styles.item,
-        color: color,
-        backgroundColor: bg,
-        border: border
-      }}
       onClick={(event) => {
         event.stopPropagation();
         onClick();
@@ -131,7 +106,7 @@ function Call({
         </div>
 
         <div
-          style={{...styles.freq, color: liked ? primary4 : '#ccc',}}
+          style={{...styles.freq}}
           onClick={(event) => {
             if (!liked) {
               onLike();
@@ -207,4 +182,4 @@ function Call({
   );
 }
 
-export default Call; 
+export default Call;
