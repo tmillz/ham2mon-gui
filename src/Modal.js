@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useMemo } from 'react'
 import { Button, Modal } from 'react-bootstrap';
 import { ThemeProvider } from 'styled-components';
+import { useDarkMode } from './useDarkMode';
 import {download, getLocalStorage, sec2time, writeLocalStorage} from "./Utils";
 import {FaTimes} from "react-icons/fa";
 import { lightTheme, darkTheme } from './theme';
@@ -9,6 +10,7 @@ import {useLocalStorage} from "./useLocalStorage";
 import Select from 'react-select-v2';
 import {Bar} from 'react-chartjs-2';
 import {DataItem} from "./DataItem";
+import Toggle from './Toggle'
 
 
 export const ModalExample = ({
@@ -25,9 +27,11 @@ export const ModalExample = ({
                             }) => {
     const [modal, setModal] = useState(false)
 
-    const [theme, setTheme] = useState('light');
+    const [theme, toggleTheme] = useDarkMode();
+    //const [theme, setTheme] = useState('light');
+    const themeMode = theme === 'light' ? lightTheme : darkTheme;
 
-    const toggleTheme = () => { theme === 'light' ? setTheme('dark') : setTheme('light')}
+    //const toggleTheme = () => { theme === 'light' ? setTheme('dark') : setTheme('light')}
 
     const namedFreqStats = freqStats.map(freqStat => {
         const name = freqData.find(item => item.freq === freqStat.freq);
@@ -229,7 +233,7 @@ export const ModalExample = ({
                 download('Ham2Mon-Gui-Backup-' + new Date().toDateString() + ".bak", storage);
                 }}
             >Backup Data</Button>
-          <Button onClick={toggleTheme}>Toggle theme</Button>
+          <Toggle theme={theme} toggleTheme={toggleTheme} />
           </Modal.Body>
           </Modal>
         </>

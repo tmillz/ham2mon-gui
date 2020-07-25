@@ -22,6 +22,7 @@
     "react-list": "^0.8.13",
     "react-scripts": "3.4.1",
     "react-select-v2": "^2.4.2",
+    "react-toggle": "^4.1.1",
     "react-use-dimensions": "^1.2.1",
     "styled-components": "^5.1.1"
   },

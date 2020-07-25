@@ -14,6 +14,7 @@ import ReactList from 'react-list';
 import {Settings} from "./Settings";
 import {useWindowSize} from "./hooks/useWindowSize";
 import { ThemeProvider } from 'styled-components';
+import { useDarkMode } from './useDarkMode';
 import { lightTheme, darkTheme } from './theme';
 import { Button } from 'react-bootstrap';
 import Modal from './Modal'
@@ -62,7 +63,10 @@ function App() {
 
   let filteredFreqs = uniqueFreqs.filter(freq => !hiddenArr.includes(freq));
 
-  const [theme, setTheme] = useState('light');
+  const [theme, toggleTheme, componentMounted] = useDarkMode();
+  //const [theme, setTheme] = useState('light');
+  const themeMode = theme === 'light' ? lightTheme : darkTheme;
+
 
   //const toggleTheme = () => {
   //  if (theme === 'light') {
@@ -235,6 +239,10 @@ function App() {
     });
 
     window.location.reload();
+  };
+
+  if (!componentMounted) {
+    return <div />
   };
 
   return (
