@@ -22,7 +22,6 @@ function Call({
                 freqData,
                 setFreqData,
               }) {
-  //const [hoverRef, isHovered] = useHover();
   const [hoverRef] = useHover();
 
   const styles = {

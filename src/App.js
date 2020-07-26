@@ -5,77 +5,21 @@ import Call from "./Call";
 import {useLocalStorage} from "./useLocalStorage";
 import './App.css';
 import produce from "immer";
-import {BooleanOption} from "./BooleanOption";
 import {NowPlaying} from "./NowPlaying";
 import {getFreqStats} from "./Utils";
 import {useHotkeys} from 'react-hotkeys-hook';
-import useDimensions from 'react-use-dimensions';
 import ReactList from 'react-list';
-import {Settings} from "./Settings";
 import {useWindowSize} from "./hooks/useWindowSize";
 import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './useDarkMode';
 import { lightTheme, darkTheme } from './theme';
 import { Button } from 'react-bootstrap';
-import Modal from './Modal'
 import ModalExample from './Modal';
 import Select from 'react-select-v2'
 
 function App() {
   const windowSize = useWindowSize();
-  const [optionsBlockRef, optionsBlockDimensions] = useDimensions();
-
-  const styles = {
-    optionsBlock: {
-      position: 'fixed',
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "space-around",
-      top: 0,
-      padding: 6,
-      width: "100%",
-      zIndex: 1000,
-      boxSizing: 'border-box'
-    },
-    leftOptionsBlock: {
-      marginRight: windowSize.width >= 600 ? 8 : 0,
-      width: windowSize.width >= 600 ? "40%" : '100%',
-    },
-    rightOptionsBlock: {
-      boxSizing: "border-box",
-      flexGrow: 1,
-      padding: 10,
-      borderRadius: 4,
-    },
-    buttons: {
-      display: "flex",
-      justifyContent: "space-between",
-      flexWrap: "wrap"
-    },
-    records: {
-      paddingTop: optionsBlockDimensions.height ? optionsBlockDimensions.height + 2 : 0
-    },
-    audio: {
-      width: "100%",
-      userSelect: "none",
-      outline: 0,
-      borderRadius: 30
-    },
-    select: {
-      outline: 0,
-    },
-    loadError: {
-      padding: 10,
-      margin: 10,
-      borderRadius: 4
-    },
-    loading: {
-      padding: 10,
-      margin: 10,
-      textAlign: 'center',
-      fontWeight: 400
-    }
-  };
+  //const [optionsBlockRef, optionsBlockDimensions] = useDimensions();
 
   const [calls, setCalls] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -96,15 +40,13 @@ function App() {
   const [freqData, setFreqData] = useLocalStorage('freqData', []);
   const [showRead, setShowRead] = useLocalStorage('showRead', true);
   const [showOnlyFreq, setShowOnlyFreq] = useLocalStorage('showOnlyFreq', '');
-  const [serverIP, setServerIP] = useLocalStorage('setServerIP', window.location.hostname);
+  const [serverIP] = useLocalStorage('setServerIP', window.location.hostname);
   const [showSince, setShowSince] = useLocalStorage('setShowSince', 60 * 60 * 24);
 
   const audioRef = useRef(null);
   const filteredCallRefs = useRef([]);
 
-  const [buttonsRef, buttonsDimensions] = useDimensions();
-
-  const serverUrl = `http://${serverIP}:8080/`;
+  const serverUrl = `http://${serverIP}:8081/`;
 
   const selectedCall = calls.find(call => call.file === selected);
   const allFreqs = calls.map(call => call.freq);
@@ -115,7 +57,7 @@ function App() {
 
   let filteredFreqs = uniqueFreqs.filter(freq => !hiddenArr.includes(freq));
 
-  const [theme, toggleTheme, componentMounted] = useDarkMode();
+  const [theme, componentMounted] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
 
   if (showHidden) {

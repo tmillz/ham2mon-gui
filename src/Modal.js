@@ -3,7 +3,6 @@ import { Button, Modal } from 'react-bootstrap';
 import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './useDarkMode';
 import {download, getLocalStorage, sec2time, writeLocalStorage} from "./Utils";
-import {FaTimes} from "react-icons/fa";
 import { lightTheme, darkTheme } from './theme';
 import { GlobalStyles } from './global';
 import {useLocalStorage} from "./useLocalStorage";
@@ -28,10 +27,7 @@ export const ModalExample = ({
     const [modal, setModal] = useState(false)
 
     const [theme, toggleTheme] = useDarkMode();
-    //const [theme, setTheme] = useState('light');
     const themeMode = theme === 'light' ? lightTheme : darkTheme;
-
-    //const toggleTheme = () => { theme === 'light' ? setTheme('dark') : setTheme('light')}
 
     const namedFreqStats = freqStats.map(freqStat => {
         const name = freqData.find(item => item.freq === freqStat.freq);
