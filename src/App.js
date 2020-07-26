@@ -252,6 +252,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+    <>
     <GlobalStyles/>
         {windowSize.width >= 600 || mobileSettingsOpen ? <div>
             <Button
@@ -465,6 +466,7 @@ function App() {
             type='uniform'
           />}
       </div>
+    </>
     </ThemeProvider>
   );
 }
