@@ -340,6 +340,7 @@ function App() {
             />
             
             <Select id="react-select-container" classNamePrefix="react-select"
+              isSearchable={ false }
               styles={selectStyles}
               value={selectOptions.find(option => option.value === showOnlyFreq)}
               placeholder={"Select a frequency"}

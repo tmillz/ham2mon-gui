@@ -131,10 +131,9 @@ export const ModalExample = ({
     }
     return (
         <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-        <>
         <GlobalStyles/>
         <Button onClick={() => handleModal()}>Settings</Button>
-            <Modal className="modal" show={modal} onHide={() => handleModal()} >
+            <Modal size="lg" className="modal" show={modal} onHide={() => handleModal()} >
             <Modal.Header closeButton>Settings</Modal.Header>
             <Modal.Body> 
             <DataItem
@@ -173,6 +172,7 @@ export const ModalExample = ({
 
           <span>Show calls since</span>
           <Select id="react-select-container" classNamePrefix="react-select"
+            isSearchable={ false }
             styles={selectStyles}
             theme={{theme}}
             value={callsSinceSelectValue}
@@ -184,14 +184,8 @@ export const ModalExample = ({
 
           <span>Remove calls older than</span>
           <Select id="react-select-container" classNamePrefix="react-select"
+            isSearchable={ false }
             styles={selectStyles}
-            //theme={theme => ({
-            //  ...theme,
-            //  colors: {
-            //    ...theme.colors,
-            //    text: 'hotpink'
-            //  },
-            //})}
             value={removeBeforeSelectValue}
             options={timeSelect}
             onChange={(res) => {
@@ -236,7 +230,6 @@ export const ModalExample = ({
           <Toggle theme={theme} toggleTheme={toggleTheme} />
           </Modal.Body>
           </Modal>
-        </>
         </ThemeProvider>
     )
 }
