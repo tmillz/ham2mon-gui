@@ -25,6 +25,58 @@ function App() {
   const windowSize = useWindowSize();
   const [optionsBlockRef, optionsBlockDimensions] = useDimensions();
 
+  const styles = {
+    optionsBlock: {
+      position: 'fixed',
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-around",
+      top: 0,
+      padding: 6,
+      width: "100%",
+      zIndex: 1000,
+      boxSizing: 'border-box'
+    },
+    leftOptionsBlock: {
+      marginRight: windowSize.width >= 600 ? 8 : 0,
+      width: windowSize.width >= 600 ? "40%" : '100%',
+    },
+    rightOptionsBlock: {
+      boxSizing: "border-box",
+      flexGrow: 1,
+      padding: 10,
+      borderRadius: 4,
+    },
+    buttons: {
+      display: "flex",
+      justifyContent: "space-between",
+      flexWrap: "wrap"
+    },
+    records: {
+      paddingTop: optionsBlockDimensions.height ? optionsBlockDimensions.height + 2 : 0
+    },
+    audio: {
+      width: "100%",
+      userSelect: "none",
+      outline: 0,
+      borderRadius: 30
+    },
+    select: {
+      outline: 0,
+    },
+    loadError: {
+      padding: 10,
+      margin: 10,
+      borderRadius: 4
+    },
+    loading: {
+      padding: 10,
+      margin: 10,
+      textAlign: 'center',
+      fontWeight: 400
+    }
+  };
+
   const [calls, setCalls] = useState([]);
   const [selected, setSelected] = useState(null);
   const [playing, setPlaying] = useState(false);
@@ -64,54 +116,7 @@ function App() {
   let filteredFreqs = uniqueFreqs.filter(freq => !hiddenArr.includes(freq));
 
   const [theme, toggleTheme, componentMounted] = useDarkMode();
-  //const [theme, setTheme] = useState('light');
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
-
-
-  //const toggleTheme = () => {
-  //  if (theme === 'light') {
-  //    setTheme('dark');
-  //  } else {
-  //    setTheme('light');
-  //  }
-  //}
-
-  //const customStyles = {
-  //  control: (base) => ({
-  //    ...base,
-  //    background: darkTheme
-      //theme={theme === 'light' ? lightTheme : darkTheme}
-  //  })
-  //};
-
-  const selectStyles = {
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
-      //return {
-        ...styles,
-        backgroundColor: isDisabled
-        ? null
-        : isSelected
-        ? data.color
-        : isFocused
-        ? '#6b6b6b'
-        : null,
-      color: isDisabled
-        ? '#6b6b6b'
-        : isSelected
-        ? '#6b6b6b'
-          ? '#6b6b6b'
-          : '#6b6b6b'
-        : data.color,
-      cursor: isDisabled ? 'not-allowed' : 'default',
-
-      ':active': {
-        ...styles[':active'],
-        backgroundColor: !isDisabled && (isSelected ? '#6b6b6b' : '#6b6b6b'),
-      },
-      //};
-    })
-  };
-
 
   if (showHidden) {
     filteredFreqs = uniqueFreqs.filter(freq => hiddenArr.includes(freq));
@@ -341,7 +346,6 @@ function App() {
             
             <Select id="react-select-container" classNamePrefix="react-select"
               isSearchable={ false }
-              styles={selectStyles}
               value={selectOptions.find(option => option.value === showOnlyFreq)}
               placeholder={"Select a frequency"}
               options={selectOptions}
