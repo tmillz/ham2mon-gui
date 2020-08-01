@@ -1,19 +1,16 @@
 import React, { useCallback, useState, useMemo } from 'react'
 import { Button, Modal } from 'react-bootstrap';
-import { ThemeProvider } from 'styled-components';
-import { useDarkMode } from './useDarkMode';
 import {download, getLocalStorage, sec2time, writeLocalStorage} from "./Utils";
-import { lightTheme, darkTheme } from './theme';
-import { GlobalStyles } from './global';
 import {useLocalStorage} from "./useLocalStorage";
 import Select from 'react-select-v2';
 import {Bar} from 'react-chartjs-2';
 import {DataItem} from "./DataItem";
 import Toggle from './Toggle'
 
-
 export const ModalExample = ({
                                 visible,
+                                theme,
+                                toggleTheme,
                                 dirSize,
                                 freeSpace,
                                 handleClose,
@@ -25,9 +22,6 @@ export const ModalExample = ({
                                 freqData
                             }) => {
     const [modal, setModal] = useState(false)
-
-    const [theme, toggleTheme] = useDarkMode();
-    const themeMode = theme === 'light' ? lightTheme : darkTheme;
 
     const namedFreqStats = freqStats.map(freqStat => {
         const name = freqData.find(item => item.freq === freqStat.freq);
@@ -126,8 +120,7 @@ export const ModalExample = ({
     setModal(!modal)
     }
     return (
-        <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-        <GlobalStyles/>
+        <>
         <Button onClick={() => handleModal()}>Settings</Button>
             <Modal size="lg" className="modal" show={modal} onHide={() => handleModal()} >
             <Modal.Header closeButton>Settings</Modal.Header>
@@ -170,7 +163,6 @@ export const ModalExample = ({
           <Select id="react-select-container" classNamePrefix="react-select"
             isSearchable={ false }
             styles={selectStyles}
-            theme={{theme}}
             value={callsSinceSelectValue}
             options={timeSelect}
             onChange={(res) => {
@@ -226,7 +218,7 @@ export const ModalExample = ({
           <Toggle theme={theme} toggleTheme={toggleTheme} />
           </Modal.Body>
           </Modal>
-        </ThemeProvider>
+        </>
     )
 }
 export default ModalExample

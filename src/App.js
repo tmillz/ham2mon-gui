@@ -16,6 +16,7 @@ import { lightTheme, darkTheme } from './theme';
 import { Button } from 'react-bootstrap';
 import ModalExample from './Modal';
 import Select from 'react-select-v2'
+import Toggle from './Toggle'
 
 function App() {
   const windowSize = useWindowSize();
@@ -57,7 +58,7 @@ function App() {
 
   let filteredFreqs = uniqueFreqs.filter(freq => !hiddenArr.includes(freq));
 
-  const [theme, componentMounted] = useDarkMode();
+  const [theme, toggleTheme, componentMounted] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
 
   if (showHidden) {
@@ -193,8 +194,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-    <>
+    <ThemeProvider theme={themeMode}>
     <GlobalStyles/>
         {windowSize.width >= 600 || mobileSettingsOpen ? <div>
             <Button
@@ -275,6 +275,8 @@ function App() {
               }}
             >Mark Listened</Button>
             <ModalExample
+              theme={theme}
+              toggleTheme={toggleTheme}
               visible={showSettings}
               dirSize={dirSize}
               freeSpace={freeSpace}
@@ -408,7 +410,6 @@ function App() {
             type='uniform'
           />}
       </div>
-    </>
     </ThemeProvider>
   );
 }
