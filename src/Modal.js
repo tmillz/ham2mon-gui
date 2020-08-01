@@ -121,7 +121,7 @@ export const ModalExample = ({
     }
     return (
         <>
-        <Button onClick={() => handleModal()}>Settings</Button>
+        <Button block onClick={() => handleModal()}>Settings</Button>
             <Modal size="lg" className="modal" show={modal} onHide={() => handleModal()} >
             <Modal.Header closeButton>Settings</Modal.Header>
             <Modal.Body> 

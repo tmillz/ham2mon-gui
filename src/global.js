@@ -2,19 +2,13 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
 
-  *,
-  *::after,
-  *::before {
-    box-sizing: border-box;
-  }
-
   body {
     background: ${({ theme }) => theme.body};
     backgroundColor: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
     display: flex;
     font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    margin: 10px;
+    margin: 2px;
   }
 
   .modal .modal-content{
@@ -27,18 +21,26 @@ export const GlobalStyles = createGlobalStyle`
     selectedButton: ${({ theme }) => theme.selected};
     border: none;
     margin: 2px;
+    text-align: left;
   }
 
-  .btn.btn-primary:hover {
+  .btn.btn-primary:hover, .btn.btn-primary:focus {
     background-color: ${({ theme }) => theme.selected};
+    box-shadow: none !important;
   }
 
-  .btn.btn-primary:focus {
-    background-color: ${({ theme }) => theme.selected};
+  .btn.btn-primary:active  {
+    background: ${({ theme }) => theme.selected} !important;
+    filter:brightness(70%);
   }
 
   #react-select-container .react-select__control {
     background: ${({ theme }) => theme.body};
+  }
+
+  #react-select-container .react-select__control--is-focused {
+    box-shadow: none;
+    border-color: ${({ theme }) => theme.text};
   }
 
   #react-select-container .react-select__menu-list {
@@ -52,4 +54,5 @@ export const GlobalStyles = createGlobalStyle`
   #react-select-container .react-select__single-value {
     color: ${({ theme }) => theme.text} !important;
   }
+
   `

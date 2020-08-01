@@ -1,5 +1,5 @@
 import { GlobalStyles } from './global';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Call from "./Call";
 import {useLocalStorage} from "./useLocalStorage";
@@ -13,10 +13,9 @@ import {useWindowSize} from "./hooks/useWindowSize";
 import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './useDarkMode';
 import { lightTheme, darkTheme } from './theme';
-import { Button } from 'react-bootstrap';
+import { Button, Container, Col, Row } from 'react-bootstrap';
 import ModalExample from './Modal';
 import Select from 'react-select-v2'
-import Toggle from './Toggle'
 
 function App() {
   const windowSize = useWindowSize();
@@ -196,43 +195,44 @@ function App() {
   return (
     <ThemeProvider theme={themeMode}>
     <GlobalStyles/>
-        {windowSize.width >= 600 || mobileSettingsOpen ? <div>
-            <Button
-              value={autoplay}
-              onClick={() => {
-                setAutoplay(!autoplay);
-              }}
-            >Autoplay</Button>
-            <Button
-              value={!showRead}
-              onClick={() => {
-                setShowRead(!showRead);
-              }}
-            >Hide Listened</Button>
-            <Button
-              value={showHidden}
-              onClick={() => {
-                setShowHidden(!showHidden);
-              }}
-            >Show Hidden</Button>
-            <Button
-              onClick={() => {
-                window.scrollTo(0, 0);
-              }}
-            >Scroll to Top</Button>
-            <Button
-              onClick={() => {
-                window.scrollTo(0, document.body.scrollHeight);
-              }}
-            >Scroll to Bottom</Button>
-            <Button
-              onClick={async () => {
+        {windowSize.width >= 600 || mobileSettingsOpen ? 
+        <Container>
+          <Row>
+            <Col>
+              <Button block value={autoplay} onClick={() => { setAutoplay(!autoplay) }}>
+                Autoplay
+              </Button>
+            </Col>
+            <Col>
+              <Button block value={!showRead} onClick={() => { setShowRead(!showRead) }}>
+                Hide Listened
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button block value={showHidden}onClick={() => { setShowHidden(!showHidden) }}>
+                Show Hidden
+              </Button>
+            </Col>
+            <Col>
+              <Button block onClick={() => { window.scrollTo(0, 0) }}>
+                Scroll to Top
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button block onClick={() => { window.scrollTo(0, document.body.scrollHeight) }}>
+                Scroll to Bottom
+              </Button>
+            </Col>
+            <Col>
+              <Button block onClick={async () => {
                 if (!window.confirm(`Are you sure you want to delete all listened audio${showOnlyFreq ? ' on this freq?' : "?"}`)) {
                   return false;
                 }
-
                 let filesToDelete;
-
                 if (showOnlyFreq) {
                   filesToDelete = calls.filter(call =>
                     call.freq === showOnlyFreq &&
@@ -243,72 +243,90 @@ function App() {
                     listenedArr.includes(call.file)
                   ).map(call => call.file);
                 }
-
                 await axios.post(`${serverUrl}delete`, {
                   files: filesToDelete
                 });
-
                 setShowOnlyFreq('');
                 getData();
-              }}
-            >Delete Listened</Button>
-            <Button
-              onClick={async () => {
-                if (!window.confirm(`Are you sure you want to mark ${showOnlyFreq ? "this frequency" : "all calls"} as read?`)) {
-                  return false;
-                }
+                }}>
+                Delete Listened
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button block type="button"
+                onClick={async () => {
+                  if (!window.confirm(`Are you sure you want to mark ${showOnlyFreq ? "this frequency" : "all calls"} as read?`)) {
+                    return false;
+                  }
 
-                let itemsToMark;
+                  let itemsToMark;
 
-                if (showOnlyFreq) {
-                  itemsToMark = unlistenedCalls.filter(call => call.freq === showOnlyFreq);
-                } else {
-                  itemsToMark = calls;
-                }
-                const tmpListenedArr = await produce(listenedArr, async (draft) => {
-                  itemsToMark.forEach((call) => {
-                    draft.push(call.file);
-                  })
-                });
+                  if (showOnlyFreq) {
+                    itemsToMark = unlistenedCalls.filter(call => call.freq === showOnlyFreq);
+                  } else {
+                    itemsToMark = calls;
+                  }
+                  const tmpListenedArr = await produce(listenedArr, async (draft) => {
+                    itemsToMark.forEach((call) => {
+                      draft.push(call.file);
+                    })
+                  });
 
-                setListenedArr(tmpListenedArr);
-              }}
-            >Mark Listened</Button>
-            <ModalExample
-              theme={theme}
-              toggleTheme={toggleTheme}
-              visible={showSettings}
-              dirSize={dirSize}
-              freeSpace={freeSpace}
-              handleClose={() => setShowSettings(false)}
-              freqStats={freqStats}
-              showSince={showSince}
-              setShowSince={setShowSince}
-              setShowOnlyFreq={setShowOnlyFreq}
-              handleDeleteBefore={handleDeleteBefore}
-              freqData={freqData}
-            />
+                  setListenedArr(tmpListenedArr);
+                }}>
+                Mark Listened
+              </Button>
+            </Col>
+            <Col>
+              <ModalExample
+                theme={theme}
+                toggleTheme={toggleTheme}
+                visible={showSettings}
+                dirSize={dirSize}
+                freeSpace={freeSpace}
+                handleClose={() => setShowSettings(false)}
+                freqStats={freqStats}
+                showSince={showSince}
+                setShowSince={setShowSince}
+                setShowOnlyFreq={setShowOnlyFreq}
+                handleDeleteBefore={handleDeleteBefore}
+                freqData={freqData}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Select id="react-select-container" classNamePrefix="react-select"
+                isSearchable={ false }
+                value={selectOptions.find(option => option.value === showOnlyFreq)}
+                placeholder={"Select a frequency"}
+                options={selectOptions}
+                onChange={(res) => {
+                  setShowOnlyFreq(res.label === 'No filter' ? '' : res.value);
+
+                  setTimeout(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                  }, 200)
+                }}
+              />
+            </Col>
+          </Row>
+          <Row>
             
-            <Select id="react-select-container" classNamePrefix="react-select"
-              isSearchable={ false }
-              value={selectOptions.find(option => option.value === showOnlyFreq)}
-              placeholder={"Select a frequency"}
-              options={selectOptions}
-              onChange={(res) => {
-                setShowOnlyFreq(res.label === 'No filter' ? '' : res.value);
-
-                setTimeout(() => {
-                  window.scrollTo(0, document.body.scrollHeight);
-                }, 200)
-              }}
-            />
-
-        </div> : null}
-        {windowSize.width < 600 ? <div style={{width: '100%'}}>
-          <Button block
-            onClick={() => setMobileSettingsOpen(!mobileSettingsOpen)}
-            >{!mobileSettingsOpen ? 'Open Panel' : 'Close Panel'}</Button>
-        </div> : null}
+          </Row>
+        </Container> : null}
+        {windowSize.width < 600 ?
+        <Container>
+            <Row>
+              <Col>
+                <Button block onClick={() => setMobileSettingsOpen(!mobileSettingsOpen)}>
+                  {!mobileSettingsOpen ? 'Open Panel' : 'Close Panel'}
+                </Button>
+              </Col>
+            </Row>
+        </Container> : null}
         <div>
           <NowPlaying call={selectedCall} freqData={freqData}/>
           <audio
@@ -332,7 +350,6 @@ function App() {
             controls
           />
         </div>
-
       <div>
         {loadError ? <div>
           There was an issue connecting to the server. Please ensure the settings are correct.
