@@ -22,15 +22,39 @@ export const GlobalStyles = createGlobalStyle`
     border: none;
     margin: 2px;
     text-align: left;
+    display: "inline-block",
+    width: 100%
   }
 
-  .btn.btn-primary:hover, .btn.btn-primary:focus {
+  .true {
     background-color: ${({ theme }) => theme.selected};
+  }
+
+  .btn.btn-primary:hover {
+    background-color: ${({ theme }) => theme.selected} !important;
     box-shadow: none !important;
   }
 
+  .btn.btn-primary:focus, .Btn-Blue-BG:hover, .Btn-Blue-BG:focus, .Btn-Blue-BG {
+    background-color: ${({ theme }) => theme.button} !important;
+    box-shadow: none !important;
+  }
+
+  .Btn-Blue-BG.active, .Btn-Blue-BG.active:focus {
+    background-color: ${({ theme }) => theme.selected} !important;
+    box-shadow: none !important;
+  }
+
+  .btn-group.special {
+    display: flex;
+  }
+  
+  .special .btn {
+    flex: 1
+  }
+
   .btn.btn-primary:active  {
-    background: ${({ theme }) => theme.selected} !important;
+    background: ${({ theme }) => theme.button} !important;
     filter:brightness(70%);
   }
 
